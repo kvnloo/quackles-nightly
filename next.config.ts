@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
   trailingSlash: true,
   images: { unoptimized: true },
   ...(basePath ? { basePath } : {}),
-  transpilePackages: ["three", "@react-three/fiber", "@react-three/drei"],
+  transpilePackages: ["three", "@react-three/fiber"],
   allowedDevOrigins: ["127.0.0.1", "localhost"],
   devIndicators: false,
 };

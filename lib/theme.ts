@@ -1,9 +1,9 @@
 /** Live tokens from https://hermes-agent.nousresearch.com/ (fetched 2026-09-15). */
 
-export type ToneId = "paper" | "cobalt" | "ink";
+type ToneId = "paper" | "cobalt" | "ink";
 export type ThemeStateId = "white" | "poster" | "dark";
 
-export type ThemeState = {
+type ThemeState = {
   id: ThemeStateId;
   tone: ToneId;
   label: string;
@@ -17,7 +17,7 @@ type Palette = {
   cobalt: string;
 };
 
-export type SceneLights = {
+type SceneLights = {
   ambient: string;
   ambientIntensity: number;
   key: string;
@@ -50,9 +50,9 @@ export const THEME_STATES: readonly ThemeState[] = [
 export const DEFAULT_THEME_ID: ThemeStateId = "poster";
 export const DEFAULT_THEME_T = 0.5;
 /** Hermes --default-transition-timing-function, 300–400ms. */
-export const THEME_LERP_MS = 360;
+const THEME_LERP_MS = 360;
 
-export function hexToRgb(hex: string): [number, number, number] {
+function hexToRgb(hex: string): [number, number, number] {
   const n = parseInt(hex.slice(1), 16);
   return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
 }
@@ -61,7 +61,7 @@ function rgbToHex(r: number, g: number, b: number) {
   return `#${[r, g, b].map((x) => Math.round(x).toString(16).padStart(2, "0")).join("")}`;
 }
 
-export function mixHex(a: string, b: string, t: number) {
+function mixHex(a: string, b: string, t: number) {
   const A = hexToRgb(a);
   const B = hexToRgb(b);
   return rgbToHex(A[0] + (B[0] - A[0]) * t, A[1] + (B[1] - A[1]) * t, A[2] + (B[2] - A[2]) * t);
@@ -81,7 +81,7 @@ function mixNum(a: number, b: number, t: number) {
 }
 
 /** cubic-bezier(0.4, 0, 0.2, 1) */
-export function easeHermes(x: number) {
+function easeHermes(x: number) {
   if (x <= 0) return 0;
   if (x >= 1) return 1;
   let t = x;
@@ -108,11 +108,11 @@ function cubicDeriv(p1: number, p2: number, t: number) {
   return (3 * a * t + 2 * b) * t + c;
 }
 
-export function themeStateById(id: ThemeStateId) {
+function themeStateById(id: ThemeStateId) {
   return THEME_STATES.find((s) => s.id === id) ?? THEME_STATES[1];
 }
 
-export function nearestThemeState(t: number) {
+function nearestThemeState(t: number) {
   let best = THEME_STATES[1];
   let dist = Infinity;
   for (const state of THEME_STATES) {
@@ -125,9 +125,6 @@ export function nearestThemeState(t: number) {
   return best;
 }
 
-export function themeLabel(t: number) {
-  return nearestThemeState(t).label;
-}
 
 export function plateWeights(t: number) {
   const x = Math.min(1, Math.max(0, t));
@@ -139,7 +136,7 @@ export function plateWeights(t: number) {
   return { white: 0, cobalt: 1 - s, dark: s };
 }
 
-export function paletteAt(t: number): Palette {
+function paletteAt(t: number): Palette {
   const x = Math.min(1, Math.max(0, t));
   return x < 0.5 ? mixPal(PAPER, COBALT, x / 0.5) : mixPal(COBALT, INK, (x - 0.5) / 0.5);
 }
@@ -228,9 +225,6 @@ export function getThemeSnapshot() {
   return themeSnapshot;
 }
 
-export function getThemeTarget() {
-  return themeTarget;
-}
 
 export function subscribeTheme(listener: () => void) {
   themeListeners.add(listener);
@@ -256,7 +250,7 @@ export function applyThemeT(t: number) {
   themeListeners.forEach((fn) => fn());
 }
 
-export function animateThemeTo(target: number, ms = THEME_LERP_MS) {
+function animateThemeTo(target: number, ms = THEME_LERP_MS) {
   if (typeof document === "undefined") return;
   themeTarget = Math.min(1, Math.max(0, target));
   const from = themeSnapshot;
@@ -281,8 +275,3 @@ export function selectTheme(id: ThemeStateId) {
   animateThemeTo(themeStateById(id).t);
 }
 
-/** Compat aliases if a poster agent still imports the old names. */
-export const applyThemeCss = applyThemeT;
-export function themeAt(t: number) {
-  return { lights: lightsAt(t), ...paletteAt(t) };
-}

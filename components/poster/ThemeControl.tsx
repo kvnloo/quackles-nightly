@@ -43,5 +43,3 @@ export function ThemeControl() {
   );
 }
 
-/** Compat name for the old range slider. */
-export const ThemeSlider = ThemeControl;
