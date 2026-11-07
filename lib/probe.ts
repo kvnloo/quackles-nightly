@@ -1,6 +1,6 @@
 import type { Pose } from "@/lib/pose";
 
-export type FrameSample = {
+type FrameSample = {
   t: number;
   dt: number;
   fps: number;
@@ -10,7 +10,7 @@ export type FrameSample = {
   source: "webgl";
 };
 
-export type QuacklesProbe = {
+type QuacklesProbe = {
   ready: boolean;
   rigReady: boolean;
   progress: number;
@@ -19,7 +19,7 @@ export type QuacklesProbe = {
   glFrames: FrameSample[];
 };
 
-export type QuacklesLenis = {
+type QuacklesLenis = {
   scrollTo: (v: number, opts?: { immediate?: boolean }) => void;
   limit: number;
   progress: number;
